@@ -75,7 +75,7 @@ public class Bezier extends Applet {
 	    public void mouseClicked(MouseEvent e) {
 		int x, y;
 
-		File f = new File(".","sample.data");
+		File f = new File(".","/src/sample.data");
 		if (!f.exists()) throw new Error("Sample Point File Not Found"); 
 		else {
 		    // get rid of existing polygon
