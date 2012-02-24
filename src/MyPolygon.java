@@ -60,21 +60,19 @@ public class MyPolygon extends Polygon {
         //Make vector(s) of points which are of size npoints+1 (to allow room for elevation).
         resizeTemp(np+1);
         
-        for (int i=0; i<np; i++) {
-          tempX[i] =  xpoints[i];
-          tempY[i] =  ypoints[i];
-        }
-        double[] originalX = tempX.clone();
-        double[] originalY = tempY.clone();
-
       /* YOUR CODE GOES HERE */
       System.out.println("First degree elevation...");
-      
+      double[] originalX = new double[np];
+      double[] originalY = new double[np];
+      for (int i=0; i<np; i++) {
+        tempX[i] =  xpoints[i]; originalX[i] = xpoints[i];
+        tempY[i] =  ypoints[i]; originalY[i] = ypoints[i];
+      }
       double n = np;
       for (int i = 1; i < np; i++)
       {
     	  tempX[i] = (i/n)*originalX[i-1] + ((n-i)/n)*originalX[i];
-    	  tempX[i] = (i/n)*originalY[i-1] + ((n-i)/n)*originalY[i];
+    	  tempY[i] = (i/n)*originalY[i-1] + ((n-i)/n)*originalY[i];
       }
       tempX[np] = originalX[np-1];
       tempY[np] = originalY[np-1];
