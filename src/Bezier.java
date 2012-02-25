@@ -16,6 +16,7 @@ public class Bezier extends Applet {
     Button bClear;
     Button bRead;
     Button bElevate;
+    Button bAuto;
     Button bQuit;
     Panel  mainPanel;
     private MyGraphics myG;
@@ -34,6 +35,7 @@ public class Bezier extends Applet {
         bClear     = new Button("Clear all");
         bRead      = new Button("Read sample points");
         bElevate    = new Button("Elevate once");
+        bAuto    = new Button("Auto Elevate");
     }
 
     public void clearMe() {
@@ -58,8 +60,15 @@ public class Bezier extends Applet {
 	panel2.add(bRead);
         bElevate = new Button("Elevate once");
 	panel2.add(bElevate);
+	
+	bAuto = new Button("Auto Elevate");
+	panel2.add(bAuto);
+	
         bClear = new Button("Clear all");
 	panel2.add(bClear);
+	
+	
+	
     if (myFrame != null)
     {
            bQuit = new Button("Quit");
@@ -110,17 +119,31 @@ public class Bezier extends Applet {
 	
 	bElevate.addMouseListener(new MouseAdapter() {
 	    public void mouseClicked(MouseEvent e) {
-		Graphics g = getGraphics();
-		g.setColor(paintColor);
-		clearMe();
-		myG.elevateOnce(g);
-		g.setPaintMode();
-	  }
+	    	if (!MyPolygon.canStop)
+	    	{
+				Graphics g = getGraphics();
+				g.setColor(paintColor);
+				clearMe();
+				myG.elevateOnce(g);
+				g.setPaintMode();
+	    	}
+	    }
 	});//elevate once
-
+	
+	bAuto.addMouseListener(new MouseAdapter() {
+	    public void mouseClicked(MouseEvent e) {
+			Graphics g = getGraphics();
+			g.setColor(paintColor);
+			clearMe();
+			myG.autoElevate(g);
+			g.setPaintMode();
+	    }
+	});//elevate once
+	
 	bClear.addMouseListener(new MouseAdapter() {
 	    public void mouseClicked(MouseEvent e) {
 		// get rid of components
+	    MyPolygon.canStop = false;
 		myG.clear(mainPanel, getBackground());
 		// clear screen
 		Graphics g = getGraphics();
@@ -139,22 +162,70 @@ public class Bezier extends Applet {
       });
     }
 
-
-	this.addMouseListener(new MouseAdapter() {
-	    public void mouseClicked(MouseEvent e) {
-		Graphics g = getGraphics();
-		g.setColor(paintColor);
-		int x = e.getX();
-		int y = e.getY();
-		// System.out.println("Cick at "+x+" "+y);
-		myG.addPolyPoint(g, x, y);
-		g.setPaintMode();
-	    }
-	});
+    this.addMouseMotionListener(new MouseMotion());
+    
+	this.addMouseListener(new MouseClicks());
     }
-
-	
-	
+    boolean hit = false;
+	int hitIndex;
+    private class MouseClicks extends MouseAdapter
+    {
+    	@Override
+    	public void mousePressed(MouseEvent e) {
+			Graphics g = getGraphics();
+			g.setColor(paintColor);
+			int x = e.getX();
+			int y = e.getY();
+			// System.out.println("Cick at "+x+" "+y);
+			hit = false;
+			for (int i = 0; i < myG.thePoly.npoints; i++)
+			{
+				if ((x-myG.thePoly.xpoints[i])*(x-myG.thePoly.xpoints[i]) + (y-myG.thePoly.ypoints[i])*(y-myG.thePoly.ypoints[i]) < 25)
+				{
+					System.out.println("HIT");
+					hit = true;
+					hitIndex = i;
+					break;
+				}
+			}
+			if (!hit)
+			{
+				myG.addPolyPoint(g, x, y);
+				hitIndex = -1;
+			}
+			g.setPaintMode();
+		    }
+    	
+    	@Override
+    	public void mouseReleased(MouseEvent e) {
+    		Graphics g = getGraphics();
+    		update(g);
+    	}
+    }
+    
+    private class MouseMotion extends MouseAdapter
+    {
+    	@Override
+    	public void mouseDragged(MouseEvent e) {
+    		//System.out.println(hitIndex > -1);
+    		if (hit & hitIndex > -1)
+    		{
+    			myG.thePoly.xpoints[hitIndex] = e.getX();
+    			myG.thePoly.ypoints[hitIndex] = e.getY();
+    			Graphics g = getGraphics();
+    			//g.setColor(paintColor);
+        		MyPolygon.canStop = false;
+        		MyGraphics.curCycle = 0;
+        		myG.thePoly.elevated = false;
+        		//myG.autoElevate(g);
+        		while(!MyPolygon.canStop)
+        			myG.elevateOnce(g);
+        		//g.clearRect(0, 0, Bezier.this.getWidth(), Bezier.this.getHeight());
+        		clearMe();
+    			update(g);
+    		}
+    	}
+    }
   /****************************************************************************/
   /* a standard overwriting of update()                                       */
   /****************************************************************************/

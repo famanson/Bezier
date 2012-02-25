@@ -46,37 +46,108 @@ public class MyPolygon extends Polygon {
         }
         assert(tempX.length == tempY.length);
     }
-
-    public void elevateOnce() {
+    /*
+    public void elevateAgain()
+    {
+    	if (!elevated)
+    	{
+    		elevateOnce();
+    		elevated = true;
+    	}
+    	else
+    	{
+    		int np = Elevated.npoints;
+    		resizeTemp(np+1);
+    		double[] originalX = new double[np];
+	        double[] originalY = new double[np];
+	        for (int i=0; i<np; i++) {
+	          originalX[i] = Elevated.xpoints[i];
+	          originalY[i] = Elevated.ypoints[i];
+	        }
+	        double n = np;
+	        for (int i = 1; i < np; i++)
+	        {
+	      	  tempX[i] = (i/n)*originalX[i-1] + ((n-i)/n)*originalX[i];
+	      	  tempY[i] = (i/n)*originalY[i-1] + ((n-i)/n)*originalY[i];
+	        }
+	        // Extremities:
+	        tempX[0] = originalX[0];
+	        tempY[0] = originalY[0];
+	        tempX[np] = originalX[np-1];
+	        tempY[np] = originalY[np-1];
+	        Elevated.reset();
+	        for(int i=0;i<=np; i++) {
+	          Elevated.addPoint((int)(tempX[i]+0.5),
+	                            (int)(tempY[i]+0.5));
+	        }
+    	}
+    }
+*/
+    public static boolean canStop = false;
+    double threshold = 1;
+    public void elevate() {
       //Input comes in the form of a Java Polygon (points are stored as integers)
       //Output is also in the form of a Java Polygon called Elevated
       //See http://download.oracle.com/javase/1.5.0/docs/api/java/awt/Polygon.html for Polygon details
       //As degree elevation progresses, the working data is kept in
       //double-precision floating point
-
-      int np=npoints;
-        //Begin new elevated polygon
-        Elevated = new Polygon();
-        //Make vector(s) of points which are of size npoints+1 (to allow room for elevation).
-        resizeTemp(np+1);
-        
-      /* YOUR CODE GOES HERE */
-      System.out.println("First degree elevation...");
-      double[] originalX = new double[np];
-      double[] originalY = new double[np];
-      for (int i=0; i<np; i++) {
-        tempX[i] =  xpoints[i]; originalX[i] = xpoints[i];
-        tempY[i] =  ypoints[i]; originalY[i] = ypoints[i];
+      int np;// = npoints;
+      double[] originalX;// = new double[np];
+      double[] originalY;// = new double[np];
+      if (!elevated)
+      {
+    	  Elevated = new Polygon();
+    	  np = npoints;
+    	  originalX = new double[np];
+    	  originalY = new double[np];
+    	  for (int i=0; i<np; i++) {
+	        originalX[i] = xpoints[i];
+	        originalY[i] = ypoints[i];
+	      }
+    	  elevated = true;
       }
+      else
+      {
+    	  np = Elevated.npoints;
+    	  originalX = new double[np];
+    	  originalY = new double[np];
+    	  for (int i=0; i<np; i++) {
+  	        originalX[i] = Elevated.xpoints[i];
+  	        originalY[i] = Elevated.ypoints[i];
+  	      }
+      }
+       //=npoints;
+      //Begin new elevated polygon
+      
+      //Make vector(s) of points which are of size npoints+1 (to allow room for elevation).
+      resizeTemp(np+1);
+      
       double n = np;
       for (int i = 1; i < np; i++)
       {
     	  tempX[i] = (i/n)*originalX[i-1] + ((n-i)/n)*originalX[i];
     	  tempY[i] = (i/n)*originalY[i-1] + ((n-i)/n)*originalY[i];
       }
+      // Extremities:
+      tempX[0] = originalX[0];
+      tempY[0] = originalY[0];
       tempX[np] = originalX[np-1];
       tempY[np] = originalY[np-1];
       
+      //System.out.println(tempX[1]-originalX[1]);
+      //System.out.println();
+      //for (int j = 1; j < np;j++)
+      {
+    	  //System.out.println(Math.abs(tempX[j]-originalX[j]));
+    	  //System.out.println(Math.abs(tempY[j]-originalY[j]));
+    	  if (Math.abs(tempX[1]-originalX[1]) <= threshold)
+    			   //& Math.abs(tempY[j]-originalY[j]) <= threshold)
+    	  {
+    		  System.out.println("Can stop here");
+    		  canStop = true;
+    	  }
+      }
+      //System.out.println();
       //Copy all npoints+1 points back into the Elevated polygon
       Elevated.reset();
       for(int i=0;i<=np; i++) {
