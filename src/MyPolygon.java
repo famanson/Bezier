@@ -152,14 +152,17 @@ public class MyPolygon extends Polygon {
         	boolean all = true;
         	for (int j = 1; j < np;j++)
             {
-          	  System.out.println(Math.abs(tempX[j]-originalX[j])/originalX[j] );
-          	  System.out.println(Math.abs(tempY[j]-originalY[j])/originalY[j]);
-          	  if (Math.abs(tempX[j]-originalX[j])/originalX[j] > 0.06 ||
-          		  Math.abs(tempY[j]-originalY[j])/originalY[j] > 0.06)
+          	  if (Math.abs(tempX[j]-originalX[j])/originalX[j] > 0.02 ||
+          		  Math.abs(tempY[j]-originalY[j])/originalY[j] > 0.02)
           	  {
           		 System.out.println("Can't stop here");
           		 //canStop = false;
           		 all = false;
+          	  }
+          	  else
+          	  {
+          		  System.out.println(Math.abs(tempX[j]-originalX[j])/originalX[j] );
+        	      System.out.println(Math.abs(tempY[j]-originalY[j])/originalY[j]);
           	  }
             }
         	if (all)

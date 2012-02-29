@@ -97,7 +97,7 @@ public class MyGraphics {
 
     public void iterElevate(Graphics g)
     {
-    	for (int i = 0; i < 15; i++)
+    	for (int i = 0; i < 10; i++)
     		thePoly.elevate();
     	
 		Color color = g.getColor();
@@ -112,15 +112,9 @@ public class MyGraphics {
 		g.setColor(color);
     }
     
-    public static int curCycle;
     public void autoElevate(Graphics g) 
     {
-    	int cycles;
-    	if (thePoly.npoints < 10)
-    		cycles = 2*thePoly.npoints;
-    	else
-    		cycles = 20;
-		thePoly.autoElevate();//elevateOnce();
+		thePoly.autoElevate();
 		Color color = g.getColor();
 		g.setColor(paintColor);
 		drawPolyPoints(g);

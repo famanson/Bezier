@@ -220,9 +220,9 @@ public class Bezier extends Applet {
     			Graphics g = getGraphics();
     			//g.setColor(paintColor);
         		MyPolygon.canStop = false;
-        		MyGraphics.curCycle = 0;
         		myG.thePoly.elevated = false;
         		myG.iterElevate(g);
+        		//g.clearRect(0, 0, Bezier.this.getWidth(), Bezier.this.getHeight());
         		clearMe();
     			update(g);
     		}
