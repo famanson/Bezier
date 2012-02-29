@@ -83,8 +83,10 @@ public class MyPolygon extends Polygon {
     	}
     }
 */
-    public static boolean canStop = false;
+   
     double threshold = 1;
+    double[] originalX;// = new double[np];
+    double[] originalY;// = new double[np];
     public void elevate() {
       //Input comes in the form of a Java Polygon (points are stored as integers)
       //Output is also in the form of a Java Polygon called Elevated
@@ -92,8 +94,7 @@ public class MyPolygon extends Polygon {
       //As degree elevation progresses, the working data is kept in
       //double-precision floating point
       int np;// = npoints;
-      double[] originalX;// = new double[np];
-      double[] originalY;// = new double[np];
+      
       if (!elevated)
       {
     	  Elevated = new Polygon();
@@ -134,25 +135,35 @@ public class MyPolygon extends Polygon {
       tempX[np] = originalX[np-1];
       tempY[np] = originalY[np-1];
       
-      //System.out.println(tempX[1]-originalX[1]);
-      //System.out.println();
-      //for (int j = 1; j < np;j++)
-      {
-    	  //System.out.println(Math.abs(tempX[j]-originalX[j]));
-    	  //System.out.println(Math.abs(tempY[j]-originalY[j]));
-    	  if (Math.abs(tempX[1]-originalX[1]) <= threshold)
-    			   //& Math.abs(tempY[j]-originalY[j]) <= threshold)
-    	  {
-    		  System.out.println("Can stop here");
-    		  canStop = true;
-    	  }
-      }
-      //System.out.println();
       //Copy all npoints+1 points back into the Elevated polygon
       Elevated.reset();
       for(int i=0;i<=np; i++) {
-        Elevated.addPoint((int)(tempX[i]+0.5),
-                          (int)(tempY[i]+0.5));
+        Elevated.addPoint((int)Math.round(tempX[i]),
+        		(int) Math.round(tempY[i]));
       }
+    }
+    public static boolean canStop = false;
+    public void autoElevate()
+    {
+        while (!canStop)
+        {
+        	this.elevate();
+        	int np = npoints;
+        	boolean all = true;
+        	for (int j = 1; j < np;j++)
+            {
+          	  System.out.println(Math.abs(tempX[j]-originalX[j])/originalX[j] );
+          	  System.out.println(Math.abs(tempY[j]-originalY[j])/originalY[j]);
+          	  if (Math.abs(tempX[j]-originalX[j])/originalX[j] > 0.06 ||
+          		  Math.abs(tempY[j]-originalY[j])/originalY[j] > 0.06)
+          	  {
+          		 System.out.println("Can't stop here");
+          		 //canStop = false;
+          		 all = false;
+          	  }
+            }
+        	if (all)
+        		canStop = true;
+        }
     }
 }

@@ -82,17 +82,34 @@ public class MyGraphics {
     //int maxElevation
     public void elevateOnce(Graphics g) 
     {
-	thePoly.elevate();//elevateOnce();
-	Color color = g.getColor();
-	g.setColor(paintColor);
-	drawPolyPoints(g);
-	g.drawPolyline(thePoly.xpoints,thePoly.ypoints,thePoly.npoints);
-	g.setColor(bkColor);
-	g.drawPolyline(thePoly.Elevated.xpoints,
-		       thePoly.Elevated.ypoints,
-		       thePoly.Elevated.npoints
-		       );
-	g.setColor(color);
+		thePoly.elevate();
+		Color color = g.getColor();
+		g.setColor(paintColor);
+		drawPolyPoints(g);
+		g.drawPolyline(thePoly.xpoints,thePoly.ypoints,thePoly.npoints);
+		g.setColor(bkColor);
+		g.drawPolyline(thePoly.Elevated.xpoints,
+			       thePoly.Elevated.ypoints,
+			       thePoly.Elevated.npoints
+			       );
+		g.setColor(color);
+    }
+
+    public void iterElevate(Graphics g)
+    {
+    	for (int i = 0; i < 15; i++)
+    		thePoly.elevate();
+    	
+		Color color = g.getColor();
+		g.setColor(paintColor);
+		drawPolyPoints(g);
+		g.drawPolyline(thePoly.xpoints,thePoly.ypoints,thePoly.npoints);
+		g.setColor(bkColor);
+		g.drawPolyline(thePoly.Elevated.xpoints,
+			       thePoly.Elevated.ypoints,
+			       thePoly.Elevated.npoints
+			       );
+		g.setColor(color);
     }
     
     public static int curCycle;
@@ -103,11 +120,7 @@ public class MyGraphics {
     		cycles = 2*thePoly.npoints;
     	else
     		cycles = 20;
-    	while (curCycle < cycles)
-    	{
-    		thePoly.elevate();//elevateOnce();
-    		curCycle++;
-    	}
+		thePoly.autoElevate();//elevateOnce();
 		Color color = g.getColor();
 		g.setColor(paintColor);
 		drawPolyPoints(g);

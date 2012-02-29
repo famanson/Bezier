@@ -129,7 +129,6 @@ public class Bezier extends Applet {
 	    	}
 	    }
 	});//elevate once
-	
 	bAuto.addMouseListener(new MouseAdapter() {
 	    public void mouseClicked(MouseEvent e) {
 			Graphics g = getGraphics();
@@ -138,7 +137,7 @@ public class Bezier extends Applet {
 			myG.autoElevate(g);
 			g.setPaintMode();
 	    }
-	});//elevate once
+	});
 	
 	bClear.addMouseListener(new MouseAdapter() {
 	    public void mouseClicked(MouseEvent e) {
@@ -194,12 +193,18 @@ public class Bezier extends Applet {
 				hitIndex = -1;
 			}
 			g.setPaintMode();
-		    }
+	    }
     	
     	@Override
     	public void mouseReleased(MouseEvent e) {
-    		Graphics g = getGraphics();
-    		update(g);
+    		if (hitIndex > -1)
+    		{
+    			Graphics g = getGraphics();
+    			g.setColor(paintColor);
+        		clearMe();
+        		myG.autoElevate(g);
+    			update(g);
+    		}
     	}
     }
     
@@ -217,10 +222,7 @@ public class Bezier extends Applet {
         		MyPolygon.canStop = false;
         		MyGraphics.curCycle = 0;
         		myG.thePoly.elevated = false;
-        		//myG.autoElevate(g);
-        		while(!MyPolygon.canStop)
-        			myG.elevateOnce(g);
-        		//g.clearRect(0, 0, Bezier.this.getWidth(), Bezier.this.getHeight());
+        		myG.iterElevate(g);
         		clearMe();
     			update(g);
     		}
